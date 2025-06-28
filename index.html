@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Fake Hacking Programming App</title>
+  <style>
+    body {
+      background: #071a1b;
+      color: #00ff41;
+      font-family: 'Fira Mono', 'Consolas', monospace;
+      margin: 0;
+      height: 100vh;
+      overflow: hidden;
+    }
+    .terminal {
+      background: rgba(0,0,0,0.87);
+      border-radius: 9px;
+      box-shadow: 0 8px 30px #000a 0px 2px 8px #00ff4170;
+      position: absolute;
+      top: 50%; left: 50%;
+      transform: translate(-50%,-50%);
+      width: 80vw;
+      max-width: 850px;
+      height: 85vh;
+      max-height: 600px;
+      padding: 22px 20px 15px 20px;
+      box-sizing: border-box;
+      overflow: hidden;
+    }
+    .terminal-header {
+      height: 24px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+    .circle {
+      width: 13px; height: 13px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 3px;
+    }
+    .red { background: #ff5f56; }
+    .yellow { background: #ffbd2e; }
+    .green { background: #27c93f; }
+    .terminal-title {
+      font-size: 1.08em;
+      color: #00ff41aa;
+      margin-left: 14px;
+      letter-spacing: 1px;
+    }
+    .output {
+      width: 100%;
+      height: 85%;
+      background: none;
+      border: none;
+      outline: none;
+      color: #00ff41;
+      font-size: 1.03em;
+      font-family: inherit;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-bottom: 8px;
+      line-height: 1.4;
+    }
+    .input-container {
+      display: flex;
+      align-items: center;
+    }
+    .prompt {
+      color: #00ff41;
+      font-weight: bold;
+      margin-right: 5px;
+      font-size: 1.05em;
+      letter-spacing: 1px;
+    }
+    .input {
+      flex: 1;
+      background: none;
+      border: none;
+      color: #00ff41;
+      font-family: inherit;
+      font-size: 1.05em;
+      outline: none;
+      caret-color: #00ff41;
+      animation: blink 1s steps(1) infinite;
+    }
+    @keyframes blink {
+      50% { caret-color: transparent; }
+    }
+    /* Scrollbar styling */
+    .output::-webkit-scrollbar {
+      width: 7px; background: #002a1b;
+    }
+    .output::-webkit-scrollbar-thumb {
+      background: #00ff41;
+      border-radius: 7px;
+    }
+    /* Responsive */
+    @media (max-width: 600px) {
+      .terminal { width: 98vw; height: 95vh; }
+    }
+  </style>
+</head>
+<body>
+  <div class="terminal">
+    <div class="terminal-header">
+      <span class="circle red"></span>
+      <span class="circle yellow"></span>
+      <span class="circle green"></span>
+      <span class="terminal-title">root@hacker: ~</span>
+    </div>
+    <div class="output" id="output"></div>
+    <div class="input-container">
+      <span class="prompt" id="prompt">&gt;</span>
+      <input type="text" class="input" id="input" autocomplete="off" autofocus>
+    </div>
+  </div>
+  <script>
+    // Fake hacking lines
+    const hackingLines = [
+      "[+] Initializing brute force attack...",
+      "[+] Bypassing firewall...",
+      "[+] Establishing connection to target...",
+      "[+] Accessing secure shell...",
+      "[+] SSH connection established.",
+      "[+] Downloading password database...",
+      "[+] Decrypting passwords...",
+      "[+] Hashes found: d41d8cd98f00b204e9800998ecf8427e",
+      "[+] Password cracked: password123",
+      "[+] Uploading rootkit...",
+      "[+] Rootkit uploaded successfully.",
+      "[+] Gaining root access...",
+      "[+] Root access granted!",
+      "[+] Planting backdoor...",
+      "[+] Backdoor installed at /usr/bin/.hidden",
+      "[+] Extracting sensitive data...",
+      "[+] Data exfiltrated: 4.2GB",
+      "[+] Erasing logs...",
+      "[+] Logs erased successfully.",
+      "[+] Disconnecting...",
+      "[+] Mission accomplished! System compromised."
+    ];
+
+    const output = document.getElementById('output');
+    const input = document.getElementById('input');
+    const prompt = document.getElementById('prompt');
+    let lineIndex = 0;
+    let simulating = false;
+
+    // Display output with typewriter effect
+    function typeLine(line, cb) {
+      let i = 0;
+      function type() {
+        if (i < line.length) {
+          output.innerHTML += line.charAt(i);
+          i++;
+          output.scrollTop = output.scrollHeight;
+          setTimeout(type, 13 + Math.random()*25);
+        } else {
+          output.innerHTML += "\n";
+          cb && cb();
+        }
+      }
+      type();
+    }
+
+    // Simulate hacking sequence
+    function playHacking(cb) {
+      if (lineIndex < hackingLines.length) {
+        typeLine(hackingLines[lineIndex], () => {
+          lineIndex++;
+          setTimeout(() => playHacking(cb), 200 + Math.random()*200);
+        });
+      } else {
+        simulating = false;
+        cb && cb();
+      }
+    }
+
+    // Handle user commands
+    function handleCommand(cmd) {
+      output.innerHTML += `> ${cmd}\n`;
+      if (simulating) return;
+      cmd = cmd.trim().toLowerCase();
+      if (["hack", "start", "run", "attack"].includes(cmd)) {
+        simulating = true;
+        lineIndex = 0;
+        playHacking(() => {
+          output.innerHTML += "[*] Awaiting next command...\n";
+          output.scrollTop = output.scrollHeight;
+        });
+      } else if (cmd === "clear" || cmd === "cls") {
+        output.innerHTML = "";
+      } else if (cmd === "help") {
+        output.innerHTML += "Available commands: hack, start, run, attack, clear, help, exit\n";
+      } else if (cmd === "exit" || cmd === "quit") {
+        output.innerHTML += "Session terminated. Bye!\n";
+        input.disabled = true;
+        setTimeout(() => window.location.reload(), 1800);
+      } else if (cmd.length > 0) {
+        output.innerHTML += `Command not found: ${cmd}\nType 'help' for a list of commands.\n`;
+      }
+      output.scrollTop = output.scrollHeight;
+    }
+
+    input.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !simulating) {
+        const cmd = input.value;
+        input.value = '';
+        handleCommand(cmd);
+      }
+    });
+
+    // Initial message
+    typeLine("[*] Welcome to HackSim Terminal. Type 'hack' to begin fake hacking.\n[*] Type 'help' for commands.\n", null);
+    input.focus();
+  </script>
+</body>
+</html>
